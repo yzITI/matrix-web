@@ -1,8 +1,9 @@
 <script setup>
 import srpc from '../srpc.js'
 import state from '../state.js'
-const { func } = defineProps(['func'])
-
+import { ChevronUpIcon } from '@heroicons/vue/outline'
+const { func, show } = defineProps(['func', 'show'])
+console.log(state.endpoint)
 srpc(state.endpoint)
 
 let res = $ref('')
@@ -17,8 +18,9 @@ function test() {
 </script>
 
 <template>
-  <div class="h-screen w-screen bg-gray-200 opacity-75 font-mono z-50 absolute">
-    <div class="h-screen w-5/6 md:w-1/3 bg-white shadow-lg p-8">
+  <div v-if="show" class="h-screen w-screen bg-gray-200 opacity-75 font-mono z-50 fixed top-0 left-0 flex justify-center items-center">
+    <div class="h-5/6 w-5/6 bg-white shadow-lg p-8 relative">
+      <chevron-up-icon class="absolute right-4 top-4 w-7 cursor-pointer" @click="show = 0" />
       <div class="text-2xl">{{ func.name }}</div>
       <div class="text-xl text-gray-500">{{ endpoint }}</div>
       <div class="text-xl text-sky-500 mt-4">REQ</div>
