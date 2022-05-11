@@ -53,7 +53,7 @@ async function del () {
 <template>
   <div class="w-full min-h-screen bg-gray-100 p-4 sm:p-10">
     <h1 class="text-3xl font-bold flex items-center">
-      <img class="w-10 mr-2" src="logo.svg">
+      <img class="w-10 mr-2" src="/logo.svg">
       Matrix
     </h1>
     <hr class="my-4">
