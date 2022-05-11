@@ -2,35 +2,36 @@
 import srpc from '../srpc.js'
 import state from '../state.js'
 import { useRouter } from 'vue-router'
+import { CubeIcon } from '@heroicons/vue/outline'
 const router = useRouter()
-window.srpc = srpc
-const token = 'token'
 
-srpc('https://matrix.yzzx.org/srpc')
-let service = $ref([])
-let sid = $ref('')
-async function get() {
-  if (sid) srpc.service.get(token, sid)
-    .then((s) => {
-      if (s) service = [s]
-    })
-    .catch((e) => console.log(e))
-  else srpc.service.getAll(token)
-    .then((s) => service = s)
-    .catch((e) => console.log(e))
+let services = $ref([])
+
+async function init () {
+  const res = await srpc.service.getAll(state.token)
+  if (!res) Swal.fire('Error', '', 'error')
+  services = res
 }
+init()
 
+function go (s) {
+  state.service = s
+  router.push('/service')
+}
 </script>
 
 <template>
-  <div class="h-24 w-screen shadow-md px-8 flex items-center">
-    <div class="text-2xl">Services</div>
-    <div class="grow"></div>
-    <input v-model="sid" class="border-sky-500 border p-1 rounded-sm focus:ring-1" @keyup.enter="get">
-  </div>
-  <div class="w-screen font-mono px-12 py-10">
-    <div v-for="s in service" class="m-2">
-      <div class="text-lg rounded-sm p-1 cursor-pointer" @click="router.push('/@/' + s._id); state.endpoint = s.endpoint">{{ s.name }}</div>
+  <div class="w-full min-h-screen bg-gray-100 p-4 sm:p-10">
+    <h1 class="text-3xl font-bold">Matrix</h1>
+    <hr class="my-4">
+    <div>
+      <div v-for="s in services" class="all-transition my-2 py-2 px-4 rounded-lg bg-white cursor-pointer shadow hover:shadow-md" @click="go(s)">
+        <h3 class="text-xl font-bold flex items-center">
+          <cube-icon class="w-8 text-gray-800 mr-2" />
+          {{ s.name }}
+        </h3>
+        <p class="text-gray-400 text-xs m-1 break-all">{{ s.endpoint }}</p>
+      </div>
     </div>
   </div>
 </template>

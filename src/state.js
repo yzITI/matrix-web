@@ -1,7 +1,8 @@
 import { reactive } from 'vue'
 
 const state = reactive({
-  endpoint: ''
+  token: 'token',
+  service: null
 })
 
 export default state

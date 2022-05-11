@@ -1,33 +1,36 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
-import Request from '../components/Request.vue'
+import { useRouter } from 'vue-router'
+import { CubeIcon, ChevronRightIcon } from '@heroicons/vue/outline'
 import state from '../state.js'
 import srpc from '../srpc.js'
-const router = useRouter(), route = useRoute()
-const token = 'token'
+const router = useRouter()
 
-const sid = route.params.id
 let functions = $ref([])
-let show = $ref(0)
-let select = $ref({})
-srpc('https://matrix.yzzx.org/srpc')
-srpc.function.getByService(token, sid)
-  .then((f) => functions = f)
-  .catch((e) => console.log(e))
-for (const f in functions) show.push(0)
+
+async function init () {
+  if (!state.service) return router.push('/')
+  const res = await srpc.function.getByService(state.token, state.service._id)
+  if (!res) Swal.fire('Error', '', 'error')
+  functions = res
+}
+init()
 </script>
 
 <template>
-  <div class="h-24 w-screen shadow-md px-8 flex items-center">
-    <div class="text-2xl mr-6">Functions</div>
-    <input v-model="state.endpoint" class="border-sky-500 border p-1 rounded-sm focus:ring-1">
-    <div class="grow"></div>
-    <input class="border-sky-500 border p-1 rounded-sm focus:ring-1">
-  </div>
-  <div class="w-screen font-mono px-12 py-10">
-    <div v-for="f in functions" class="m-2">
-      <div class="text-lg rounded-sm p-1 cursor-pointer" @click="select = f; show++">{{ f.name }}</div>
+  <div class="w-full min-h-screen bg-gray-100 p-4 sm:p-10">
+    <h1 class="text-3xl font-bold flex items-center">
+      <cube-icon class="w-8 text-gray-800 mr-2" />
+      {{ state.service.name }}
+    </h1>
+    <p class="text-sm my-2 text-gray-400">{{ state.service.endpoint }}</p>
+    <hr class="mb-4">
+    <div>
+      <div v-for="f in functions" class="all-transition my-2 py-2 px-4 rounded-lg bg-white cursor-pointer shadow hover:shadow-md">
+        <h3 class="text-xl font-bold flex items-center">
+          <chevron-right-icon class="w-6 text-gray-800 mr-2" />
+          {{ f.name }}
+        </h3>
+      </div>
     </div>
-    <request v-if="show" :show="show" :func="select" />
   </div>
 </template>
