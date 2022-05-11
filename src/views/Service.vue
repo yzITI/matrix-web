@@ -1,16 +1,20 @@
 <script setup>
 import srpc from '../srpc.js'
+import testSrpc from '../utils/test-srpc.js'
 import state from '../state.js'
-import { CubeIcon, PlusIcon, PencilIcon, CodeIcon } from '@heroicons/vue/outline'
+import { CubeIcon, PlusIcon, PencilIcon, ChevronRightIcon } from '@heroicons/vue/outline'
 import SideDrawer from '../components/SideDrawer.vue'
+import Wrapper from '../components/Wrapper.vue'
+import Detail from '../components/Detail.vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-let functions = $ref([]), loading = $ref(true)
+let functions = $ref([]), showDetail = $ref({}), loading = $ref(true)
 let showEditor = $ref(false), draft = $ref({})
 
 async function init () {
-  if (!state.service) return router.push('/service')
+  if (!state.service._id) return router.push('/')
+  testSrpc(state.service.endpoint)
   const res = await srpc.function.getByService(state.token, state.service._id)
   loading = false
   if (!res) Swal.fire('Error', '', 'error')
@@ -59,13 +63,16 @@ async function del () {
     <div v-else>
       <div v-for="f in functions" class="all-transition my-2 py-2 px-4 rounded-lg bg-white shadow hover:shadow-md">
         <h3 class="text-xl font-bold font-mono flex items-center">
-          <code-icon class="w-7 text-gray-800 mr-2" />
+          <chevron-right-icon class="w-6 cursor-pointer all-transition text-gray-600 mr-2" :class="showDetail[f._id] ? 'rotate-90' : ''" @click="showDetail[f._id] = !showDetail[f._id]" />
           {{ f.name }}
-          <button class="all-transition bg-blue-50 border border-blue-400 rounded ml-2 p-1 font-bold hover:bg-blue-100" @click.stop="edit(f)">
+          <button class="all-transition bg-blue-50 border border-blue-400 rounded ml-2 p-1 font-bold hover:bg-blue-100" @click="edit(f)">
             <pencil-icon class="w-4 text-blue-400" />
           </button>
         </h3>
         <p class="text-gray-400 text-xs m-1 break-all">{{ f.description }}</p>
+        <wrapper :show="showDetail[f._id]">
+          <detail :f="f"></detail>
+        </wrapper>
       </div>
     </div>
   </div>

@@ -3,7 +3,7 @@ import { reactive } from 'vue'
 const state = reactive({
   loading: false,
   token: 'token',
-  service: null
+  service: {}
 })
 
 export default state

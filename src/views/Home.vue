@@ -61,7 +61,7 @@ async function del () {
     <div v-else>
       <div v-for="s in services" class="all-transition my-2 py-2 px-4 rounded-lg bg-white cursor-pointer shadow hover:shadow-md" @click="go(s)">
         <h3 class="text-xl font-bold flex items-center">
-          <cube-icon class="w-8 text-gray-800 mr-2" />
+          <cube-icon class="w-8 text-gray-600 mr-2" />
           {{ s.name }}
           <button class="all-transition bg-blue-50 border border-blue-400 rounded ml-2 p-1 font-bold hover:bg-blue-100" @click.stop="edit(s)">
             <pencil-icon class="w-4 text-blue-400" />
