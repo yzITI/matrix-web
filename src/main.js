@@ -4,6 +4,8 @@ import router from './router.js'
 import './index.css'
 import srpc from './srpc.js'
 srpc('https://matrix.yzzx.org/srpc')
-window.srpc = srpc
+
+import testSrpc from './utils/test-srpc.js'
+window.srpc = testSrpc
 
 createApp(App).use(router).mount('#app')

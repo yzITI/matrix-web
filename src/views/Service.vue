@@ -5,11 +5,12 @@ import state from '../state.js'
 import srpc from '../srpc.js'
 const router = useRouter()
 
-let functions = $ref([])
+let functions = $ref([]), loading = $ref(true)
 
 async function init () {
   if (!state.service) return router.push('/')
   const res = await srpc.function.getByService(state.token, state.service._id)
+  loading = false
   if (!res) Swal.fire('Error', '', 'error')
   functions = res
 }
@@ -24,7 +25,8 @@ init()
     </h1>
     <p class="text-sm my-2 text-gray-400">{{ state.service.endpoint }}</p>
     <hr class="mb-4">
-    <div>
+    <p v-if="loading">Loading...</p>
+    <div v-else>
       <div v-for="f in functions" class="all-transition my-2 py-2 px-4 rounded-lg bg-white cursor-pointer shadow hover:shadow-md">
         <h3 class="text-xl font-bold flex items-center">
           <chevron-right-icon class="w-6 text-gray-800 mr-2" />
