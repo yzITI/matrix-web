@@ -61,7 +61,7 @@ function dist (x, y) {
 }
 
 async function updateArgs () {
-  const newArgs = arg.split(',').map(x => x.split('=')).map(x => ({ name: x[0].trim(), default: x[1].trim() }))
+  const newArgs = arg.split(',').map(x => x.split('=')).map(x => ({ name: x[0].trim(), default: x[1]?.trim() }))
   // auto find description
   for (const a of newArgs) {
     for (const o of draft.args) {
