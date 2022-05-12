@@ -2,7 +2,7 @@
 import srpc from '../srpc.js'
 import testSrpc from '../utils/test-srpc.js'
 import state from '../state.js'
-import { CubeIcon, PlusIcon, PencilIcon, ChevronRightIcon } from '@heroicons/vue/outline'
+import { CubeIcon, PlusIcon, PencilIcon, ChevronRightIcon, CheckIcon } from '@heroicons/vue/outline'
 import SideDrawer from '../components/SideDrawer.vue'
 import Wrapper from '../components/Wrapper.vue'
 import Detail from '../components/Detail.vue'
@@ -10,7 +10,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 let functions = $ref([]), showDetail = $ref({}), loading = $ref(true)
-let showEditor = $ref(false), draft = $ref({})
+let showEditor = $ref(false), draft = $ref({}), arg = $ref('')
 
 async function init () {
   if (!state.service._id) return router.push('/')
@@ -18,14 +18,16 @@ async function init () {
   const res = await srpc.function.getByService(state.token, state.service._id)
   loading = false
   if (!res) Swal.fire('Error', '', 'error')
+  res.sort((a, b) => a.name > b.name ? 1 : -1)
   functions = res
 }
 init()
 
 function edit (s) {
   showEditor = true
-  draft = s
+  draft = JSON.parse(JSON.stringify(s))
   draft.service = state.service._id
+  if (!draft.args) draft.args = []
 }
 
 async function submit () {
@@ -48,6 +50,13 @@ async function del () {
   showEditor = false
   draft = null
   init()
+}
+
+async function updateArgs () {
+  const newArgs = arg.split(', ').map(x => x.split(' = ')).map(x => ({ name: x[0].trim(), default: eval(x[1]) }))
+  // Todo: auto complete
+  draft.args = newArgs
+  arg = ''
 }
 </script>
 
@@ -88,6 +97,17 @@ async function del () {
       <p class="text-gray-400 font-mono mb-4">{{ draft._id || 'new function' }}</p>
       <div class="font-bold my-2">Name: <input v-model="draft.name"></div>
       <div class="font-bold my-2">Description: <input v-model="draft.description"></div>
+      <div class="font-bold mt-2 overflow-x-auto flex flex-col">
+        Arguments:
+        <div class="flex items-center my-2">
+          <input class="font-mono" style="width: 70%;" placeholder="Formatted Argument List" v-model="arg">
+          <check-icon class="w-6 ml-2 cursor-pointer text-blue-500" @click="updateArgs" />
+        </div>
+        <div class="font-normal my-1" v-for="a in draft.args">
+          <code class="bg-gray-200 px-2 py-1">{{ a.name }}{{ a.default ? `(${a.default})` : '' }}</code>
+          <input placeholder="Description" v-model="a.description">
+        </div>
+      </div>
       <div class="flex items-center my-4">
         <button class="all-transition px-3 py-1 rounded text-white shadow hover:shadow-md font-bold" :class="draft.name ? 'bg-blue-500' : 'bg-gray-500'" @click="submit">Submit</button>
         <button class="all-transition px-3 py-1 ml-2 rounded text-white bg-red-500 shadow hover:shadow-md font-bold" v-if="draft._id" @click="del">Delete</button>

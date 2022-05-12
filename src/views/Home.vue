@@ -24,7 +24,7 @@ function go (s) {
 
 function edit (s) {
   showEditor = true
-  draft = s
+  draft = JSON.parse(JSON.stringify(s))
 }
 
 async function submit () {
