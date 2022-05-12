@@ -52,9 +52,41 @@ async function del () {
   init()
 }
 
+function dist (x, y) {
+  const xs = x.split('.'), ys = y.split('.')
+  for (let i = 0; i < xs.length; i++) {
+    if (!ys[i] || ys[i] !== xs[i]) return i
+  }
+  return xs.length
+}
+
 async function updateArgs () {
-  const newArgs = arg.split(', ').map(x => x.split(' = ')).map(x => ({ name: x[0].trim(), default: eval(x[1]) }))
-  // Todo: auto complete
+  const newArgs = arg.split(',').map(x => x.split('=')).map(x => ({ name: x[0].trim(), default: x[1].trim() }))
+  // auto find description
+  for (const a of newArgs) {
+    for (const o of draft.args) {
+      if (o.name === a.name && o.description) a.description = o.description
+    }
+    if (a.description) continue
+    let max = -1, description = ''
+    for (const f of functions) {
+      if (!f.args) continue
+      let des = ''
+      for (const o of f.args) {
+        if (o.name === a.name && o.description) {
+          des = o.description
+          break
+        }
+      }
+      if (!des) continue
+      const d = dist(f.name, draft.name)
+      if (d > max) {
+        max = d
+        description = des
+      }
+    }
+    if (description) a.description = description
+  }
   draft.args = newArgs
   arg = ''
 }
