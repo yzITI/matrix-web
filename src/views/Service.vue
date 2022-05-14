@@ -2,7 +2,7 @@
 import srpc from '../srpc.js'
 import testSrpc from '../utils/test-srpc.js'
 import state from '../state.js'
-import { CubeIcon, PlusIcon, PencilIcon, ChevronRightIcon, CheckIcon } from '@heroicons/vue/outline'
+import { CubeIcon, PlusIcon, PencilIcon, ChevronRightIcon, ArrowCircleRightIcon } from '@heroicons/vue/outline'
 import SideDrawer from '../components/SideDrawer.vue'
 import Wrapper from '../components/Wrapper.vue'
 import Detail from '../components/Detail.vue'
@@ -127,19 +127,20 @@ async function updateArgs () {
         Function
       </h1>
       <p class="text-gray-400 font-mono mb-4">{{ draft._id || 'new function' }}</p>
-      <div class="font-bold my-2">Name: <input v-model="draft.name"></div>
+      <div class="font-bold my-2">Name: <input class="font-mono" v-model="draft.name"></div>
       <div class="font-bold my-2">Description: <input v-model="draft.description"></div>
       <div class="font-bold mt-2 overflow-x-auto flex flex-col">
         Arguments:
-        <div class="flex items-center my-2">
-          <input class="font-mono" style="width: 70%;" placeholder="Formatted Argument List" v-model="arg">
-          <check-icon class="w-6 ml-2 cursor-pointer text-blue-500" @click="updateArgs" />
+        <div class="flex items-center mb-2">
+          <input class="font-mono text-sm" style="width: 80%;" placeholder="Formatted Argument List" v-model="arg">
+          <arrow-circle-right-icon class="w-6 ml-2 cursor-pointer text-blue-500" @click="updateArgs" />
         </div>
-        <div class="font-normal my-1" v-for="a in draft.args">
+        <div class="font-normal py-1 pl-1 border-l-2 border-gray-600" v-for="a in draft.args">
           <code class="bg-gray-200 px-2 py-1">{{ a.name }}{{ a.default ? `(${a.default})` : '' }}</code>
           <input placeholder="Description" v-model="a.description">
         </div>
       </div>
+      <div class="font-bold my-2">Return: <input v-model="draft.return"></div>
       <div class="flex items-center my-4">
         <button class="all-transition px-3 py-1 rounded text-white shadow hover:shadow-md font-bold" :class="draft.name ? 'bg-blue-500' : 'bg-gray-500'" @click="submit">Submit</button>
         <button class="all-transition px-3 py-1 ml-2 rounded text-white bg-red-500 shadow hover:shadow-md font-bold" v-if="draft._id" @click="del">Delete</button>
