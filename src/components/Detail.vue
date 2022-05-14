@@ -1,50 +1,46 @@
 <script setup>
 import state from '../state.js'
-import { PencilIcon, XIcon } from '@heroicons/vue/outline'
+import { AdjustmentsIcon, XIcon } from '@heroicons/vue/outline'
+import srpc from '../utils/test-srpc.js'
 const { f } = defineProps(['f'])
 
-const v = $ref({})
-const edit = $ref(false)
-const res = $ref(null)
+let v = $ref({}), edit = $ref(false), res = $ref(null), loading = $ref(false)
 
-for (const o of f.args) v[o.name] = o.placeholder || ''
-if ('T' in v) v.T = `"${state.token}"`
-
-function excute () {
-  srpc(state.service.endpoint)
+async function execute () {
   const a = []
-  for (const o of f.args) {
-    console.log(v[o.name])
-    a.push(JSON.parse(v[o.name]))
+  try {
+    for (const o of f.args) a.push(eval(v[o.name]))
+  } catch {
+    return Swal.fire('Invalid Argument', 'Arguments follow JS syntax', 'error')
   }
-  srpc[f.name](...a)
-    .then((r) => { res = r; console.log(f.name, r) })
-    .catch(e => console.log(e))
+  console.log('Test Function:', f.name, a)
+  loading = true
+  await srpc[f.name](...a)
+    .then(r => { res = JSON.stringify(r, null, 2) })
+    .catch(e => { Swal.fire('Error', e, 'error') })
+  loading = false
 }
-
 </script>
 
 <template>
-  <div class="w-full relative font-mono mb-2">
-    <div v-if="edit" class="absolute right-2 top-0 flex text-red-400 bg-red-100 p-1 border border-red-400 rounded cursor-pointer text-sm" @click="edit = false">
-      <x-icon class="w-4" />
-      cancel
+  <div class="w-full relative">
+    <div v-for="o in f.args" class="py-1 sm:mx-4">
+      <div>
+        <code class="py-1 px-2 bg-gray-200 mr-2">{{ o.name }}</code>
+        <span class="text-sm text-gray-400">{{ o.description }}</span>
+      </div>
+      <textarea v-if="edit" v-model="v[o.name]" class="p-1 font-mono block border w-full"></textarea>
     </div>
-    <div v-else class="absolute right-2 top-0 flex text-green-400 bg-green-100 p-1 border border-green-400 rounded cursor-pointer text-sm" @click="edit = true">
-      <pencil-icon class="w-4" />
-      edit
+    <div class="flex items-center mt-2 p-1 sm:mx-4 text-sm">
+      <div v-if="edit" class="all-transition px-3 py-1 mr-2 text-center border border-blue-400 bg-blue-100 text-blue-400 rounded cursor-pointer hover:bg-blue-400 hover:text-white" @click="execute">{{ loading ? 'Loading...' : 'Test Function' }}</div>
+      <div class="flex p-1 border rounded cursor-pointer" :class="edit ? 'border-red-400 text-red-400 bg-red-100' : 'border-yellow-500 text-yellow-500 bg-yellow-100'" @click="edit = !edit">
+        <x-icon v-if="edit" class="w-4" />
+        <adjustments-icon v-else class="w-4" />
+        {{ edit ? 'Cancel' : 'Test' }}
+      </div>
     </div>
-    <div v-for="o in f.args" class="pl-4">
-      <div class="text-xl">{{ o.name }}</div>
-      <div class="text-sm text-gray-400">{{ o.description }}</div>
-      <div class="pl-4 m-2"><textarea v-model="v[o.name]" class="border w-full" :disabled="!edit"></textarea></div>
+    <div v-if="edit && res && !loading" class="sm:mx-4 mt-2 py-1 overflow-x-auto border bg-gray-50">
+      <div class="px-2 py-1 font-mono whitespace-pre">{{ res }}</div>
     </div>
-    <div v-if="edit">
-      <div class="flex justify-center text-xl p-1 border border-blue-400 bg-blue-100 text-blue-400 rounded cursor-pointer" @click="excute">excute</div>
-      <div class="text-xl m-2">Response</div>
-      <div class="ml-4 mr-2 px-2 py-1 border bg-gray-50 break-normal">{{ res }}</div>
-    </div>
-    <div class="text-xl m-2">Response Example</div>
-    <div class="ml-4 mr-2 px-2 py-1 border bg-gray-50">{{ f.res }}</div>
   </div>
 </template>
