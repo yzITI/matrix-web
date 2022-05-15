@@ -102,7 +102,7 @@ async function updateArgs () {
     <hr class="mb-4">
     <p v-if="loading">Loading...</p>
     <div v-else>
-      <div v-for="f in functions" class="all-transition my-2 py-2 px-4 rounded-lg bg-white shadow hover:shadow-md">
+      <div v-for="f in functions" class="all-transition my-2 py-2 px-4 rounded-lg bg-white shadow hover:shadow-md" :key="f._id">
         <h3 class="text-xl font-bold font-mono flex items-center">
           <chevron-right-icon class="w-6 cursor-pointer all-transition text-gray-600 mr-2" :class="showDetail[f._id] ? 'rotate-90' : ''" @click="showDetail[f._id] = !showDetail[f._id]" />
           {{ f.name }}
@@ -132,7 +132,7 @@ async function updateArgs () {
       <div class="font-bold mt-2 overflow-x-auto flex flex-col">
         Arguments:
         <div class="flex items-center mb-2">
-          <input class="font-mono text-sm" style="width: 80%;" placeholder="Formatted Argument List" v-model="arg">
+          <input class="font-mono text-sm" style="width: 80%;" placeholder="Formatted Argument List" v-model="arg" @keyup.enter="updateArgs">
           <arrow-circle-right-icon class="w-6 ml-2 cursor-pointer text-blue-500" @click="updateArgs" />
         </div>
         <div class="font-normal py-1 pl-1 border-l-2 border-gray-600" v-for="a in draft.args">

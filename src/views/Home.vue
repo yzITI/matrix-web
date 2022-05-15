@@ -59,7 +59,7 @@ async function del () {
     <hr class="my-4">
     <p v-if="loading">Loading...</p>
     <div v-else>
-      <div v-for="s in services" class="all-transition my-2 py-2 px-4 rounded-lg bg-white cursor-pointer shadow hover:shadow-md" @click="go(s)">
+      <div v-for="s in services" class="all-transition my-2 py-2 px-4 rounded-lg bg-white cursor-pointer shadow hover:shadow-md" @click="go(s)" :key="s._id">
         <h3 class="text-xl font-bold flex items-center">
           <cube-icon class="w-8 text-gray-600 mr-2" />
           {{ s.name }}
