@@ -14,7 +14,7 @@ const codeStr = $computed(() => {
 async function execute () {
   const a = []
   try {
-    for (const o of f.args) a.push(eval(v[o.name]))
+    for (const o of f.args) a.push(eval('(' + v[o.name] + ')'))
   } catch {
     return Swal.fire('Invalid Argument', 'Arguments follow JS syntax', 'error')
   }

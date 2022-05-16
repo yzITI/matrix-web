@@ -10,6 +10,7 @@ let services = $ref([]), loading = $ref(true)
 let showEditor = $ref(false), draft = $ref({})
 
 async function init () {
+  services = []
   const res = await srpc.service.getAll(state.token)
   loading = false
   if (!res) Swal.fire('Error', '', 'error')

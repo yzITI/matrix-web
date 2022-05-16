@@ -15,6 +15,7 @@ let showEditor = $ref(false), draft = $ref({}), arg = $ref('')
 async function init () {
   if (!state.service._id) return router.push('/')
   testSrpc(state.service.endpoint)
+  functions = []
   const res = await srpc.function.getByService(state.token, state.service._id)
   loading = false
   if (!res) Swal.fire('Error', '', 'error')
