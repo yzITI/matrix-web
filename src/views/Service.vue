@@ -13,7 +13,7 @@ let functions = $ref([]), showDetail = $ref({}), loading = $ref(true)
 let showEditor = $ref(false), draft = $ref({}), arg = $ref('')
 
 async function init () {
-  if (!state.service._id) return router.push('/')
+  if (!state.service._id) return router.push('/home')
   testSrpc(state.service.endpoint)
   functions = []
   const res = await srpc.function.getByService(state.token, state.service._id)
@@ -95,7 +95,7 @@ async function updateArgs () {
 
 <template>
   <div class="w-full min-h-screen bg-gray-100 p-4 sm:p-10">
-    <h1 class="text-3xl font-bold flex items-center cursor-pointer" @click="router.push('/')">
+    <h1 class="text-3xl font-bold flex items-center cursor-pointer" @click="router.push('/home')">
       <cube-icon class="w-8 text-gray-800 mr-2" />
       {{ state.service.name }}
     </h1>
