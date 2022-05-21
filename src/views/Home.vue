@@ -50,6 +50,14 @@ async function del () {
   draft = null
   init()
 }
+
+async function reset () {
+  if (!draft._id) return
+  state.loading = true
+  const secret = await srpc.service.reset(state.token, draft._id)
+  state.loading = false
+  if (secret) Swal.fire('New Secret', secret, 'success')
+}
 </script>
 
 <template>
@@ -88,6 +96,7 @@ async function del () {
       <div class="flex items-center my-4">
         <button class="all-transition px-3 py-1 rounded text-white shadow hover:shadow-md font-bold" :class="draft.name ? 'bg-blue-500' : 'bg-gray-500'" @click="submit">Submit</button>
         <button class="all-transition px-3 py-1 ml-2 rounded text-white bg-red-500 shadow hover:shadow-md font-bold" v-if="draft._id" @click="del">Delete</button>
+        <button v-if="draft._id" class="all-transition px-3 py-1 ml-2 rounded text-white bg-yellow-500 shadow hover:shadow-md font-bold" @click="reset">Reset</button>
       </div>
     </div>
   </side-drawer>
