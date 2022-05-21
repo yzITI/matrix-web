@@ -10,12 +10,13 @@ exports.setService = (name, secret) => {
   _secret = secret
 }
 
-const submit = () => new Promise((r, rej) => {
-  const req = request(url, { method: 'POST', headers: { 'Content-Type': 'application/json' } }, r)
+function submit () {
+  if (!data.length) return
+  const req = request(url, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
   req.write(JSON.stringify({ N: 'log', A: [_name, data, HS256()] }))
-  req.on('error', rej)
+  data = []
   req.end()
-})
+}
 
 exports.log = ctx => {
   data.push([Date.now(), ctx.IP, ctx.N, ctx.A])
