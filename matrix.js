@@ -12,7 +12,7 @@ exports.setService = (id, secret) => {
 
 function submit () {
   if (!data.length) return
-  const req = request(url, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+  const req = https.request(url, { method: 'POST' })
   req.write(JSON.stringify({ N: 'log', A: [_id, data, HS256()] }))
   data = []
   req.end()
