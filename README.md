@@ -1,29 +1,19 @@
-# template-web
+# Matrix Web
 
-Vite + Vue 3 + VueRouter 4 + TailwindCSS + Heroicons
+Frontend of Matrix
 
-CDN Library: axios + SweetAlert2 + NProgress
+## SDK
 
-## Get Started
+Log probe for SRPC services.
 
-Click **Use Template** or this [link](https://github.com/yzITI/template-web/generate).
+[./matrix.js](./matrix.js)
 
-Change project name in  `package.json` and `index.html`
-```
-"name": "project-name"
+```js
+const matrix = require('./matrix.js')
+matrix.setService('service id', 'service secret')
 
-<!-- you may change lang as well -->
-<title>Your Title</title>
-```
+srpc({ before: matrix.log })
 
-Install dependency
-
-```
-npm i
-```
-
-Run dev server
-
-```
-npm run dev
+// call this function to submit actively
+matrix.submit()
 ```
