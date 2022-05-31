@@ -91,6 +91,13 @@ async function updateArgs () {
   draft.args = newArgs
   arg = ''
 }
+
+function countClass (cnt) {
+  if (!cnt) return 'text-gray-500'
+  if (cnt < 100) return 'text-green-500'
+  if (cnt < 1000) return 'text-yellow-500'
+  return 'text-red-500 font-bold'
+}
 </script>
 
 <template>
@@ -103,13 +110,14 @@ async function updateArgs () {
     <hr class="mb-4">
     <p v-if="loading">Loading...</p>
     <div v-else>
-      <div v-for="f in functions" class="all-transition my-2 py-2 px-4 rounded-lg bg-white shadow hover:shadow-md" :key="f._id">
+      <div v-for="f in functions" class="relative all-transition my-2 py-2 px-4 rounded-lg bg-white shadow hover:shadow-md" :key="f._id">
         <h3 class="text-xl font-bold font-mono flex items-center">
           <chevron-right-icon class="w-6 cursor-pointer all-transition text-gray-600 mr-2" :class="showDetail[f._id] ? 'rotate-90' : ''" @click="showDetail[f._id] = !showDetail[f._id]" />
           {{ f.name }}
           <button class="all-transition bg-blue-50 border border-blue-400 rounded ml-2 p-1 font-bold hover:bg-blue-100" @click="edit(f)">
             <pencil-icon class="w-4 text-blue-400" />
           </button>
+          <div class="opacity-50 text-xs sm:opacity-100 sm:text-sm absolute top-0 right-2 font-mono font-normal" :class="countClass(f.count)">{{ f.count || 0 }}</div>
         </h3>
         <p class="text-gray-400 text-xs m-1 break-all">{{ f.description }}</p>
         <wrapper :show="showDetail[f._id]">

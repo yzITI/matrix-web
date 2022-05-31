@@ -58,6 +58,13 @@ async function reset () {
   state.loading = false
   if (secret) Swal.fire('New Secret', secret, 'success')
 }
+
+function countClass (cnt) {
+  if (!cnt) return 'text-gray-500'
+  if (cnt < 100) return 'text-green-500'
+  if (cnt < 1000) return 'text-yellow-500'
+  return 'text-red-500'
+}
 </script>
 
 <template>
@@ -69,7 +76,7 @@ async function reset () {
     <hr class="my-4">
     <p v-if="loading">Loading...</p>
     <div v-else>
-      <div v-for="s in services" class="all-transition my-2 py-2 px-4 rounded-lg bg-white cursor-pointer shadow hover:shadow-md" @click="go(s)" :key="s._id">
+      <div v-for="s in services" class="relative all-transition my-2 py-2 px-4 rounded-lg bg-white cursor-pointer shadow hover:shadow-md" @click="go(s)" :key="s._id">
         <h3 class="text-xl font-bold flex items-center">
           <cube-icon class="w-8 text-gray-600 mr-2" />
           {{ s.name }}
@@ -78,6 +85,7 @@ async function reset () {
           </button>
         </h3>
         <p class="text-gray-400 text-xs m-1 break-all">{{ s.endpoint }}</p>
+        <div class="opacity-50 text-xs sm:opacity-100 sm:text-sm absolute top-0 right-2 font-mono font-normal" :class="countClass(s.count)">{{ s.count || 0 }}</div>
       </div>
     </div>
   </div>
