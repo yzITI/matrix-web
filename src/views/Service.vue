@@ -106,7 +106,7 @@ function countClass (cnt) {
       <cube-icon class="w-8 text-gray-800 mr-2" />
       {{ state.service.name }}
     </h1>
-    <p class="my-2 text-gray-400 text-sm">{{ state.service.endpoint }}</p>
+    <p class="my-2 text-gray-400 text-sm select-all">{{ state.service.endpoint }}</p>
     <hr class="mb-4">
     <p v-if="loading">Loading...</p>
     <div v-else>
